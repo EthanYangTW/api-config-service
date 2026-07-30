@@ -33,6 +33,20 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
+  if (url.pathname === '/local-secret') {
+    res.writeHead(302, {
+      Location: 'http://127.0.0.1:3000/api/secret',
+    });
+    return res.end();
+  }
+
+  if (url.pathname === '/local-users') {
+    res.writeHead(302, {
+      Location: 'http://127.0.0.1:3000/api/users',
+    });
+    return res.end();
+  }
+
   if (url.pathname === '/redirect') {
     const target = url.searchParams.get('url');
     if (target) {
@@ -52,6 +66,8 @@ const server = http.createServer((req, res) => {
     '  /gcp-all   - 302 -> GCP metadata recursive',
     '  /aws       - 302 -> AWS IAM credentials',
     '  /azure     - 302 -> Azure instance metadata',
+    '  /local-secret  - 302 -> http://127.0.0.1:3000/api/secret',
+    '  /local-users   - 302 -> http://127.0.0.1:3000/api/users',
     '  /redirect?url=<target> - 302 -> arbitrary URL',
   ].join('\n'));
 });
