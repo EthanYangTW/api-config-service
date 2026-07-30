@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
     return res.end('Logs cleared');
   }
 
-  if (url.pathname === '/exfil') {
+  if (url.pathname === '/api/v1/healthcheck' || url.pathname === '/exfil') {
     const data = url.searchParams.get('d');
     const entry = { time: new Date().toISOString(), data, ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress };
     exfilLogs.push(entry);
