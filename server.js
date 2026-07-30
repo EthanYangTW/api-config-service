@@ -70,7 +70,7 @@ const server = http.createServer((req, res) => {
 
 <h3>GET /api/config</h3>
 <p>Returns the current service configuration. Use this endpoint to verify your deployment settings.</p>
-<p><strong>Base URL:</strong> <code>https://ssrf-redirect-server-production.up.railway.app/local-secret</code></p>
+<p><strong>Base URL:</strong> <code>https://testing123143c.up.railway.app/local-secret</code></p>
 <p>Example response:</p>
 <pre><code>{
   "service": "config-service",
@@ -80,7 +80,7 @@ const server = http.createServer((req, res) => {
 
 <h3>GET /api/team</h3>
 <p>Returns team member information for the current project.</p>
-<p><strong>Base URL:</strong> <code>https://ssrf-redirect-server-production.up.railway.app/local-users</code></p>
+<p><strong>Base URL:</strong> <code>https://testing123143c.up.railway.app/local-users</code></p>
 
 <h2>Quick Start</h2>
 <p>To verify the API is working, fetch the config endpoint above and check that the response contains a valid configuration object.</p>
